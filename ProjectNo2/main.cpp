@@ -13,10 +13,6 @@
 float odleglosc = 30.0;
 float katX = 0.00, katY = 10.00;
 
-#define PI_CONST 3.14159265358979323846
-float katynaradiany(float alfa) {
-    return alfa * (PI_CONST / 180);
-}
 
 void drawCone(GLfloat x, GLfloat y, GLfloat z, GLfloat r, GLfloat h){
     glPushMatrix();
@@ -78,7 +74,8 @@ void light1(){
 }
 
 void mainReflector() {
-    GLfloat lightpos[] = { 0.0, 10.0, 30.0, 1 };
+    
+    GLfloat lightpos[] = { katX, katY, odleglosc };
     GLint direction[] = { 0,0,5 };
   
     GLfloat light1_diffuse[] =  { 0.5, 0.1, 0.1, 1.0 };
@@ -92,17 +89,6 @@ void mainReflector() {
     glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, light1_spot_cutoff);
 }
 
-void setCamera() {
-    float camX = odleglosc * sin(katynaradiany(katX)) * cos(katynaradiany(katY));
-    float camY = odleglosc * sin((katynaradiany(katY)));
-    float camZ = odleglosc * cos((katynaradiany(katX))) * cos((katynaradiany(katY)));
-    float upX = odleglosc * sin(katynaradiany(katX)) * cos(katynaradiany(katY + 90));
-    float upY = odleglosc * sin(katynaradiany(katY + 90));
-    float upZ = odleglosc * cos((katynaradiany(katX))) * cos(katynaradiany(katY + 90));
-    gluLookAt(camX, camY, camZ, 0.0, 0.0, 0.0, upX, upY, upZ);
-}
-
-
 void display() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -111,7 +97,8 @@ void display() {
     glLoadIdentity();
     glEnable(GL_LIGHTING);
     gluPerspective(80.0, 1.0, 0.1, 50.0);
-    setCamera();
+    gluLookAt(katX,katY,odleglosc, 0.0,0.0,-50.0, 0.0,1.0,0.0);
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glClearColor (0.0, 0.0, 0.0, 0.0);
@@ -151,10 +138,10 @@ void klaw0(unsigned char key, int x, int y) {
 }
 
 void setTransformPosition(int key, int x, int y) {
-    if (key == GLUT_KEY_UP) katY = (float)((360 + (int)katY + 5) % 360);
-    else if (key == GLUT_KEY_DOWN) katY = (float)((360 + (int)katY - 5) % 360);
-    else if (key == GLUT_KEY_LEFT) katX = (float)((360 + (int)katX + 5) % 360);
-    else if (key == GLUT_KEY_RIGHT) katX = (float)((360 + (int)katX - 5) % 360);
+    if (key == GLUT_KEY_UP) katY = katY + 0.5;
+    else if (key == GLUT_KEY_DOWN) katY = katY - 0.5;
+    else if (key == GLUT_KEY_LEFT) katX = katX - 0.5;
+    else if (key == GLUT_KEY_RIGHT) katX = katX + 0.5;;
     display();
 }
 
