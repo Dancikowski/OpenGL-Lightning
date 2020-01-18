@@ -10,11 +10,11 @@
 #include <GLUT/GLUT.h>
 #include <math.h>
 
-float odleglosc = 30.0;
-float katX = 0.00, katY = 10.00;
+float distance = 30.0;
+float angleX = 0.00, angleY = 10.00;
 
 
-void drawCone(GLfloat x, GLfloat y, GLfloat z, GLfloat r, GLfloat h){
+void drawCone(GLfloat x, GLfloat y, GLfloat z, GLfloat r, GLfloat h) {
     glPushMatrix();
     glTranslated(x,y,z);
     glRotatef(-90.0, 0.0, 0.0, 0.0);
@@ -23,7 +23,7 @@ void drawCone(GLfloat x, GLfloat y, GLfloat z, GLfloat r, GLfloat h){
 }
 
 
-void drawTorus(GLfloat x, GLfloat y, GLfloat z, GLfloat i, GLfloat o){
+void drawTorus(GLfloat x, GLfloat y, GLfloat z, GLfloat i, GLfloat o) {
     glPushMatrix();
     glTranslated(x,y,z);
     glRotatef(-90.0, 0.0, 0.0, 0.0);
@@ -53,7 +53,7 @@ void colorYellowShine() {
     glMaterialfv(GL_FRONT, GL_SHININESS, shine_shiness);
 }
 
-void light2(){
+void light2() {
     GLfloat light_position[] = { 50.0, 0.0, 0.0, 1};
     GLfloat light_color[] = { 0.3, 0.1, 0.1 };
     GLint direction[] = { 1, 0, 1 };
@@ -64,7 +64,7 @@ void light2(){
     glLightiv(GL_LIGHT2, GL_SPOT_DIRECTION, direction);
 }
 
-void light1(){
+void light1() {
     GLfloat lightColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     GLfloat light_position[] = { 33.0, 33.0, 33.0, 1 };
     GLfloat cutoff[] = { 180 };
@@ -75,18 +75,18 @@ void light1(){
 
 void mainReflector() {
     
-    GLfloat lightpos[] = { katX, katY, odleglosc };
+    GLfloat lightpos[] = { angleX, angleY, distance };
     GLint direction[] = { 0,0,5 };
   
-    GLfloat light1_diffuse[] =  { 0.5, 0.1, 0.1, 1.0 };
-    GLint light1_spot_exponent = 100;
-    GLint light1_spot_cutoff = 180;
+    GLfloat diffuse[] =  { 0.5, 0.1, 0.1, 1.0 };
+    GLint spot_exponent = 100;
+    GLint spot_cutoff = 180;
     
     glLightfv(GL_LIGHT1, GL_POSITION, lightpos);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
     glLightiv(GL_LIGHT1, GL_SPOT_DIRECTION, direction);
-    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, light1_spot_exponent);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, light1_spot_cutoff);
+    glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, spot_exponent);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, spot_cutoff);
 }
 
 void display() {
@@ -97,15 +97,15 @@ void display() {
     glLoadIdentity();
     glEnable(GL_LIGHTING);
     gluPerspective(80.0, 1.0, 0.1, 50.0);
-    gluLookAt(katX,katY,odleglosc, 0.0,0.0,-50.0, 0.0,1.0,0.0);
+    gluLookAt(angleX, angleY, distance, 0.0,0.0,-50.0, 0.0,1.0,0.0);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glClearColor (0.0, 0.0, 0.0, 0.0);
-    
+    mainReflector();
     light1();
     light2();
-    mainReflector();
+    
     
     colorRedMate();
     drawCone(0, 0, 0, 8, 20);
@@ -119,7 +119,7 @@ void display() {
 
 void klaw0(unsigned char key, int x, int y) {
     if (key == '1'){
-       glEnable(GL_LIGHT1);
+      glEnable(GL_LIGHT1);
     } if (key == '2'){
         glDisable(GL_LIGHT1);
     } if (key == '3'){
@@ -131,25 +131,25 @@ void klaw0(unsigned char key, int x, int y) {
     } if (key == '6'){
         glDisable(GL_LIGHT2);
     }
-    if (key == '+') odleglosc -= 0.5;
-    else if (key == '-') odleglosc += 0.5;
+    if (key == '+') distance -= 0.5;
+    else if (key == '-') distance += 0.5;
     
     display();
 }
 
 void setTransformPosition(int key, int x, int y) {
-    if (key == GLUT_KEY_UP) katY = katY + 0.5;
-    else if (key == GLUT_KEY_DOWN) katY = katY - 0.5;
-    else if (key == GLUT_KEY_LEFT) katX = katX - 0.5;
-    else if (key == GLUT_KEY_RIGHT) katX = katX + 0.5;;
+    if (key == GLUT_KEY_UP) angleY = angleY + 0.5;
+    else if (key == GLUT_KEY_DOWN) angleY = angleY - 0.5;
+    else if (key == GLUT_KEY_LEFT) angleX = angleX - 0.5;
+    else if (key == GLUT_KEY_RIGHT) angleX = angleX + 0.5;;
     display();
 }
 
 void setDistancePosition(unsigned char key, int x, int y) {
     if (key == '-') {
-        odleglosc += 0.1;
+        distance += 0.1;
     } else if (key == '+') {
-        odleglosc -= 0.1;
+        distance -= 0.1;
     }
     display();
 }
@@ -161,7 +161,6 @@ void initGL() {
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHT2);
-    
 }
 
 void przerysuj(int s, int w) {
